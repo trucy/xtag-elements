@@ -42,6 +42,36 @@
 		events:{
 			'transitionend': function(e){
 				if (e.target == this) xtag.fireEvent(this, 'slideend');
+			},
+			'touchstart': function(e){
+				startX = e.targetTouches[0].pageX;
+				startY = e.targetTouches[0].pageY;
+				parentNodeElement = e.targetTouches[0].target.parentNode;
+				var parentNodeName = e.targetTouches[0].target.parentNode.tagName;
+				while(parentNodeName != 'x-slidebox') {
+					parentNodeElement = parentNodeElement.parentNode;
+					parentNodeName = parentNodeElement.tagName.toLowerCase();
+				}
+				orient = parentNodeElement.getAttribute('data-orientation');
+			},
+			'touchmove': function(e){
+				e.preventDefault();
+				var moveX = e.targetTouches[0].pageX - startX;
+				var moveY = e.targetTouches[0].pageY - startY;
+				dirX = Math.abs(moveX)/moveX;
+				dirY = Math.abs(moveY)/moveY;
+			},
+			'touchend': function(){
+				switch(orient) {
+					case 'x':
+						parentNodeElement.xtag[ !(dirX - 1) ? 'slidePrevious' : 'slideNext' ]();
+						break;
+					case 'y':
+						parentNodeElement.xtag[ !(dirX - 1) ? 'slidePrevious' : 'slideNext' ]();
+						break;
+					default:
+						break;
+				}
 			}
 		},
 		setters: {
